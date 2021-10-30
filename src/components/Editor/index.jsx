@@ -11,10 +11,19 @@ import {
   bubbleMenuStyles,
   floatingMenuStyles,
 } from "./styles.js";
+import ExcalidrawExtension from "./Extensions/Excalidraw";
+import CodeBlock from "./Extensions/CodeBlock";
+import ExecutionBlock from "./Extensions/ExecutionBlock";
 
 const Editor = () => {
   const editor = useEditor({
-    extensions: [StarterKit],
+    // editable: false,
+    extensions: [
+      StarterKit,
+      ExcalidrawExtension,
+       CodeBlock,
+      ExecutionBlock,
+    ],
     content: `
     <p>
     That’s a boring paragraph followed by a fenced code block:
@@ -30,10 +39,25 @@ console.log("Buzz");
 else
 console.log(i);
 }</code></pre>
+<ExecutionBlock>
+Implementation of the Sieve of Eratosthenes
+# https://stackoverflow.com/questions/3939660/sieve-of-eratosthenes-finding-primes-python
+
+# Finds all prime numbers up to n
+def eratosthenes(n):
+    multiples = []
+    for i in range(2, n+1):
+        if i not in multiples:
+            print (i)
+            for j in range(i*i, n+1, i):
+                multiples.append(j)
+
+eratosthenes(100)
+</ExecutionBlock>
   <p>
     Press Command/Ctrl + Enter to leave the fenced code block and continue typing in boring paragraphs.
   </p>
-
+  <Excalidraw></Excalidraw>
     `,
   });
 
@@ -46,7 +70,9 @@ console.log(i);
       )}
       {editor && (
         <BubbleMenu
-          className={bubbleMenuStyles}
+          className={bubbleMenuStyles(
+            editor?.isActive("excalidraw") || !editor.isEditable
+          )}
           tippyOptions={{
             duration: 100,
           }}
@@ -104,6 +130,31 @@ console.log(i);
             className={editor.isActive("bulletList") ? "is-active" : ""}
           >
             Bullet List
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleExecutionBlock().run()}
+            className={editor.isActive("executionBlock") ? "is-active" : ""}
+          >
+            Python
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            className={editor.isActive("codeBlock") ? "is-active" : ""}
+          >
+            Code
+          </button>
+          <button
+            onClick={() =>
+              editor
+                .chain()
+                .focus()
+                .toggleExcalidrawBlock()
+                .selectNodeBackward()
+                .run()
+            }
+            className={editor.isActive("excalidraw") ? "is-active" : ""}
+          >
+            Draw
           </button>
         </FloatingMenu>
       )}
