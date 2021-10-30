@@ -5,6 +5,10 @@ import {
   useUserDispatch,
   loginUser,
 } from '../../components/context/UserContext';
+import Header from './Header'
+import HeroHome from './HeroHome';
+
+import '../../css/style.scss';
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
 
@@ -28,6 +32,13 @@ function LandingPage() {
           // setLoginLoading(false);
         }}
       />
+
+      <div className="flex flex-col min-h-screen overflow-hidden">
+        <Header />
+        <main className="flex-grow">
+          <HeroHome />
+        </main>
+      </div>
 
     </>
   );
