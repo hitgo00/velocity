@@ -1,7 +1,8 @@
 import React from 'react';
-import Editor from './components/Editor';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import LandingPage from './pages/LandingPage';
+import Editor from "./components/Editor";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import ContentBuilder from "./pages/ContentBuilder";
 import { useUserState } from './components/context/UserContext';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Switch>
         <Route exact path="/" component={LandingPage} />
         <Route path="/editor" component={Editor} />
+        <Route path="/course/:courseId" component={ContentBuilder} />
       </Switch>
     </BrowserRouter>
   );
