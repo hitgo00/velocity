@@ -17,13 +17,58 @@ import CodeBlock from "./Extensions/CodeBlock";
 import ExecutionBlock from "./Extensions/ExecutionBlock";
 
 import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 
 const ROOM_ID = "velocity";
-const socketUrl = "wss://simple-ws-serverr.herokuapp.com";
+const socketUrl = process.env.REACT_APP_WS_URL;
+
+const colors = [
+  "#958DF1",
+  "#F98181",
+  "#FBBC88",
+  "#FAF594",
+  "#70CFF8",
+  "#94FADB",
+  "#B9F18D",
+];
+
+const names = [
+  "Lea Thompson",
+  "Cyndi Lauper",
+  "Tom Cruise",
+  "Madonna",
+  "Jerry Hall",
+  "Joan Collins",
+  "Winona Ryder",
+  "Christina Applegate",
+  "Alyssa Milano",
+  "Molly Ringwald",
+  "Ally Sheedy",
+  "Debbie Harry",
+  "Olivia Newton-John",
+  "Elton John",
+  "Michael J. Fox",
+  "Axl Rose",
+  "Emilio Estevez",
+  "Ralph Macchio",
+  "Rob Lowe",
+  "Jennifer Grey",
+  "Mickey Rourke",
+  "John Cusack",
+  "Matthew Broderick",
+  "Justine Bateman",
+  "Lisa Bonet",
+];
 
 const Editor = () => {
+  const getRandomElement = (list) =>
+    list[Math.floor(Math.random() * list.length)];
+
+  const getRandomColor = () => getRandomElement(colors);
+  const getRandomName = () => getRandomElement(names);
+
   const { ydoc, provider } = useMemo(() => {
     const ydoc = new Y.Doc();
     const provider = new WebsocketProvider(socketUrl, ROOM_ID, ydoc);
@@ -40,9 +85,18 @@ const Editor = () => {
   const editor = useEditor({
     // editable: false,
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        history: false,
+      }),
       Collaboration.configure({
         document: ydoc,
+      }),
+      CollaborationCursor.configure({
+        provider: provider,
+        user: {
+          name: getRandomName(),
+          color: getRandomColor(),
+        },
       }),
       ExcalidrawExtension,
       CodeBlock,
