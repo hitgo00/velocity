@@ -1,4 +1,4 @@
-import { css } from "@emotion/css";
+import { css } from '@emotion/css';
 
 export const containerStyles = css`
   margin: 2em;
@@ -12,12 +12,21 @@ export const containerStyles = css`
     ul,
     ol {
       padding: 0 1rem;
+      list-style: disc;
+    }
+
+    h1 {
+      font-size: 32px;
+    }
+
+    h2 {
+      font-size: 24px;
     }
 
     pre {
       background: #0d0d0d;
       color: #fff;
-      font-family: "JetBrainsMono", monospace;
+      font-family: 'JetBrainsMono', monospace;
       padding: 0.75rem 1rem;
       border-radius: 0.5rem;
 
@@ -109,7 +118,7 @@ export const containerStyles = css`
 `;
 
 export const bubbleMenuStyles = (hidden) => css`
-  display: ${hidden ? "none" : "flex"};
+  display: ${hidden ? 'none' : 'flex'};
   background-color: #0d0d0d;
   padding: 0.2rem;
   border-radius: 0.5rem;
