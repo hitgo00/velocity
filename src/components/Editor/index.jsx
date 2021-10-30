@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useEffect } from "react";
 import {
   useEditor,
   EditorContent,
@@ -6,6 +6,7 @@ import {
   FloatingMenu,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+
 import {
   containerStyles,
   bubbleMenuStyles,
@@ -15,50 +16,73 @@ import ExcalidrawExtension from "./Extensions/Excalidraw";
 import CodeBlock from "./Extensions/CodeBlock";
 import ExecutionBlock from "./Extensions/ExecutionBlock";
 
+import Collaboration from "@tiptap/extension-collaboration";
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+
+const ROOM_ID = "velocity";
+const socketUrl = "wss://simple-ws-serverr.herokuapp.com";
+
 const Editor = () => {
+  const { ydoc, provider } = useMemo(() => {
+    const ydoc = new Y.Doc();
+    const provider = new WebsocketProvider(socketUrl, ROOM_ID, ydoc);
+
+    return { ydoc, provider };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      provider.disconnect();
+    };
+  }, [provider]);
+
   const editor = useEditor({
     // editable: false,
     extensions: [
       StarterKit,
+      Collaboration.configure({
+        document: ydoc,
+      }),
       ExcalidrawExtension,
-       CodeBlock,
+      CodeBlock,
       ExecutionBlock,
     ],
-    content: `
-    <p>
-    That’s a boring paragraph followed by a fenced code block:
-  </p>
-  <pre><executionBlock class="language-javascript">for (var i=1; i <= 20; i++)
-{
-if (i % 15 == 0)
-console.log("FizzBuzz");
-else if (i % 3 == 0)
-console.log("Fizz");
-else if (i % 5 == 0)
-console.log("Buzz");
-else
-console.log(i);
-}</code></pre>
-<ExecutionBlock>
-Implementation of the Sieve of Eratosthenes
-# https://stackoverflow.com/questions/3939660/sieve-of-eratosthenes-finding-primes-python
+    //     content: `
+    //     <p>
+    //     That’s a boring paragraph followed by a fenced code block:
+    //   </p>
+    //   <pre><executionBlock class="language-javascript">for (var i=1; i <= 20; i++)
+    // {
+    // if (i % 15 == 0)
+    // console.log("FizzBuzz");
+    // else if (i % 3 == 0)
+    // console.log("Fizz");
+    // else if (i % 5 == 0)
+    // console.log("Buzz");
+    // else
+    // console.log(i);
+    // }</code></pre>
+    // <ExecutionBlock>
+    // Implementation of the Sieve of Eratosthenes
+    // # https://stackoverflow.com/questions/3939660/sieve-of-eratosthenes-finding-primes-python
 
-# Finds all prime numbers up to n
-def eratosthenes(n):
-    multiples = []
-    for i in range(2, n+1):
-        if i not in multiples:
-            print (i)
-            for j in range(i*i, n+1, i):
-                multiples.append(j)
+    // # Finds all prime numbers up to n
+    // def eratosthenes(n):
+    //     multiples = []
+    //     for i in range(2, n+1):
+    //         if i not in multiples:
+    //             print (i)
+    //             for j in range(i*i, n+1, i):
+    //                 multiples.append(j)
 
-eratosthenes(100)
-</ExecutionBlock>
-  <p>
-    Press Command/Ctrl + Enter to leave the fenced code block and continue typing in boring paragraphs.
-  </p>
-  <Excalidraw></Excalidraw>
-    `,
+    // eratosthenes(100)
+    // </ExecutionBlock>
+    //   <p>
+    //     Press Command/Ctrl + Enter to leave the fenced code block and continue typing in boring paragraphs.
+    //   </p>
+    //   <Excalidraw></Excalidraw>
+    //     `,
   });
 
   return (

@@ -83,7 +83,8 @@ export const containerStyles = css`
   }
 `;
 
-export const bubbleMenuStyles = css`
+export const bubbleMenuStyles = (hidden) => css`
+  display: ${hidden ? "none" : "flex"};
   background-color: #0d0d0d;
   padding: 0.2rem;
   border-radius: 0.5rem;
