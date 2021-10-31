@@ -1,8 +1,9 @@
 import React from 'react';
-import Editor from "./components/Editor";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import LandingPage from "./pages/LandingPage";
-import ContentBuilder from "./pages/ContentBuilder";
+import Editor from './components/Editor';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import ContentBuilder from './pages/ContentBuilder';
+import Dashboard from './pages/Dashboard';
 import { useUserState } from './components/context/UserContext';
 
 function App() {
@@ -14,6 +15,8 @@ function App() {
         <Route exact path="/" component={LandingPage} />
         <Route path="/editor" component={Editor} />
         <Route path="/course/:courseId" component={ContentBuilder} />
+        {/* <Route path="/dashboard" component={OldDashboard} /> */}
+        <Route path="/dashboard" component={Dashboard} />
       </Switch>
     </BrowserRouter>
   );
