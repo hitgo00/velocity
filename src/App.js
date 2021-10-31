@@ -22,7 +22,7 @@ function App() {
           component={ContentBuilder}
         />
         {/* <Route path="/dashboard" component={OldDashboard} /> */}
-        <Route path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/dashboard" component={Dashboard} />
       </Switch>
     </BrowserRouter>
   );

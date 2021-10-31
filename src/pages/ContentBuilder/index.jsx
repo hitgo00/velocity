@@ -7,6 +7,7 @@ import Editor from '../../components/Editor';
 import SideBar from './components/Sidebar';
 import axios from 'axios';
 import { useCourseContext } from '../../components/context/CourseContext';
+import { useUserState } from '../../components/context/UserContext';
 
 const APP_URL = 'https://extip.herokuapp.com';
 
@@ -37,7 +38,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
 
 const ContentBuilder = (props) => {
   const { courseId, lessonId } = props.match.params;
-  // const [lessonId, setLessonId] = useState(_lessonId);
+  const { isAuthenticated, name } = useUserState();
   const ROOM_ID = courseId || 'velomcity';
   const { course, setCourse } = useCourseContext();
   const history = useHistory();
@@ -55,6 +56,9 @@ const ContentBuilder = (props) => {
   }, []);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
     socket.current = io(APP_URL);
     socket.current.on('connect', function () {
       if (audioRef.current?.srcObject) joinChannel(ROOM_ID, {});
@@ -165,7 +169,7 @@ const ContentBuilder = (props) => {
       delete peers[peer_id];
       delete peerMedias.current[config.peer_id];
     });
-  }, [ROOM_ID, joinChannel]);
+  }, [ROOM_ID, isAuthenticated, joinChannel]);
 
   React.useEffect(() => {
     if (!course) {
@@ -205,7 +209,7 @@ const ContentBuilder = (props) => {
   return (
     <div className="flex editorrr">
       <SideBar drawerOpen onAddLesson={onAddLesson} />
-      <Editor name="Meet" lessonId={lessonId} viewOnly={false} />
+      <Editor name={name} lessonId={lessonId} viewOnly={!isAuthenticated} />
       <audio autoPlay muted={true} ref={audioRef} />
       {peerStreams &&
         Object.entries(peerMedias.current).map((idStreamArr) => {
