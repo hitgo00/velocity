@@ -1,6 +1,7 @@
 import { css } from '@emotion/css';
 
 export const containerStyles = css`
+  width: 100%;
   margin: 2em;
 
   .ProseMirror .is-empty::before {

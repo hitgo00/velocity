@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 
 import Editor from '../../components/Editor';
+import SideBar from './components/Sidebar';
 
 const APP_URL = 'https://extip.herokuapp.com';
 
@@ -161,7 +162,9 @@ const ContentBuilder = (props) => {
   }, [ROOM_ID, joinChannel]);
 
   return (
-    <div>
+    <div className="flex editorrr">
+      <SideBar drawerOpen />
+      <Editor name="Meet" lessonId={courseId} viewOnly={false} />
       <audio autoPlay muted={true} ref={audioRef} />
       {peerStreams &&
         Object.entries(peerMedias.current).map((idStreamArr) => {
@@ -179,7 +182,6 @@ const ContentBuilder = (props) => {
             />
           );
         })}
-      <Editor name="Meet" lessonId={courseId} viewOnly={false}/>
     </div>
   );
 };
