@@ -4,7 +4,7 @@ import { TextField, Button } from '@mui/material';
 
 import { getIframeSrc } from './utils';
 
-const EmbedNodeView = ({ node, updateAttributes }) => {
+const EmbedNodeView = ({ editor, node, updateAttributes }) => {
   const { url } = node.attrs;
   const [input, setInput] = useState('');
 
@@ -30,15 +30,19 @@ const EmbedNodeView = ({ node, updateAttributes }) => {
   }
   return (
     <NodeViewWrapper>
-      <div className="w-full flex space-x-2 ">
-        <TextField
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          variant="outlined"
-          placeholder="Enter embed URl..."
-        />
-        <Button onClick={setUrl}>Embed</Button>
-      </div>
+      {editor.isEditable ? (
+        <div className="w-full flex space-x-2 ">
+          <TextField
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            variant="outlined"
+            placeholder="Enter embed URl..."
+          />
+          <Button onClick={setUrl}>Embed</Button>
+        </div>
+      ) : (
+        <div />
+      )}
     </NodeViewWrapper>
   );
 };
