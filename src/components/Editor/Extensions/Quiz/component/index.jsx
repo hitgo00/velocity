@@ -22,16 +22,21 @@ class App extends Component {
     this.handleAnswerSelected = this.handleAnswerSelected.bind(this);
   }
 
-  componentDidMount() {
-    // console.log('hello', this.state.quizQuestions);
-    // if (!this.state.quizQuestions.length) {
-    //   return;
-    // }
-    // console.log(this.state.quizQuestions);
-    // const _quizQuestions = this.state.quizQuestions.map((quizQuestion) => ({
-    //   question: quizQuestion.question_statement,
-    //   answers: [quizQuestion.answer, ...quizQuestion.extra_options],
-    // }));
+  componentDidUpdate() {
+    console.log(this.props.quizQuestions);
+    if (!this.props.quizQuestions.length || this.state.question) {
+      return;
+    }
+    const quizQuestions = this.props.quizQuestions.map((quizQuestion) => ({
+      question: quizQuestion.question_statement,
+      answers: [quizQuestion.answer, ...quizQuestion.extra_options].map(
+        (answer) => ({
+          type: answer,
+          content: answer,
+          correctAnser: quizQuestion.answer,
+        })
+      ),
+    }));
     const shuffledAnswerOptions = quizQuestions.map((question) =>
       this.shuffleArray(question.answers)
     );

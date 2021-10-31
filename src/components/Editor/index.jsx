@@ -275,6 +275,19 @@ const Editor = (props) => {
           >
             Embed
           </button>
+          <button
+            onClick={() =>
+              editor
+                .chain()
+                .focus()
+                .toggleQuizBlock()
+                .selectNodeBackward()
+                .run()
+            }
+            className={editor.isActive('quiz') ? 'is-active' : ''}
+          >
+           Question
+          </button>
         </FloatingMenu>
       )}
 

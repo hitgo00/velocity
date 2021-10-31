@@ -164,7 +164,9 @@ export const isHidden = (editor) => {
 };
 
 export const floatingMenuStyles = (editor) => css`
-  display: ${editor?.isActive('vl_title') ? 'none !important' : 'flex'};
+  display: ${editor?.isActive('vl_title') || !editor.isEditable
+    ? 'none !important'
+    : 'flex'};
   background-color: #0d0d0d10;
   padding: 0.2rem;
   border-radius: 0.5rem;

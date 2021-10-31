@@ -75,7 +75,7 @@ const QuizBlock = ({ editor, node, updateAttributes }) => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [editor]);
 
   return (
     <NodeViewWrapper>
