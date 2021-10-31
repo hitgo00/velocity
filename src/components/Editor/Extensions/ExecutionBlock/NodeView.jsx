@@ -1,7 +1,7 @@
-import React, { useCallback } from "react";
-import { createPythonClient } from "./clients/pyhton";
-import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
-import Editor, { Monaco } from "@monaco-editor/react";
+import React, { useCallback } from 'react';
+import { createPythonClient } from './clients/pyhton';
+import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
+import Editor, { Monaco } from '@monaco-editor/react';
 
 const initialCode = `# Implementation of the Sieve of Eratosthenes
 # https://stackoverflow.com/questions/3939660/sieve-of-eratosthenes-finding-primes-python
@@ -19,7 +19,7 @@ eratosthenes(100)`;
 
 const CodeBlock = ({ editor, node }) => {
   const [pyodide, setPyodide] = React.useState(null);
-  const [output, setOutput] = React.useState("");
+  const [output, setOutput] = React.useState('');
 
   const onRunCode = useCallback(
     async (code) => {
@@ -43,11 +43,12 @@ const CodeBlock = ({ editor, node }) => {
   React.useEffect(() => {
     window
       .loadPyodide({
-        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/",
+        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.18.1/full/',
       })
       .then((pyodide) => {
         setPyodide(pyodide);
-      });
+      })
+      .catch(console.log);
   }, []);
 
   return (

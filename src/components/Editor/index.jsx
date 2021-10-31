@@ -1,66 +1,72 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect } from 'react';
 import {
   useEditor,
   EditorContent,
   BubbleMenu,
   FloatingMenu,
-} from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-
+} from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Document from '@tiptap/extension-document';
 import {
   containerStyles,
   bubbleMenuStyles,
   floatingMenuStyles,
-} from "./styles.js";
-import ExcalidrawExtension from "./Extensions/Excalidraw";
-import CodeBlock from "./Extensions/CodeBlock";
-import ExecutionBlock from "./Extensions/ExecutionBlock";
+} from './styles.js';
+import ExcalidrawExtension from './Extensions/Excalidraw';
+import CodeBlock from './Extensions/CodeBlock';
+import ExecutionBlock from './Extensions/ExecutionBlock';
+import Title from './Extensions/Title';
+import Placeholder from '@tiptap/extension-placeholder';
 
-import Collaboration from "@tiptap/extension-collaboration";
-import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
-import * as Y from "yjs";
-import { WebsocketProvider } from "y-websocket";
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
+import * as Y from 'yjs';
+import { WebsocketProvider } from 'y-websocket';
 
-const ROOM_ID = "velocity";
+const ROOM_ID = 'velocity';
 const socketUrl = process.env.REACT_APP_WS_URL;
 
 const colors = [
-  "#958DF1",
-  "#F98181",
-  "#FBBC88",
-  "#FAF594",
-  "#70CFF8",
-  "#94FADB",
-  "#B9F18D",
+  '#958DF1',
+  '#F98181',
+  '#FBBC88',
+  '#FAF594',
+  '#70CFF8',
+  '#94FADB',
+  '#B9F18D',
 ];
 
 const names = [
-  "Lea Thompson",
-  "Cyndi Lauper",
-  "Tom Cruise",
-  "Madonna",
-  "Jerry Hall",
-  "Joan Collins",
-  "Winona Ryder",
-  "Christina Applegate",
-  "Alyssa Milano",
-  "Molly Ringwald",
-  "Ally Sheedy",
-  "Debbie Harry",
-  "Olivia Newton-John",
-  "Elton John",
-  "Michael J. Fox",
-  "Axl Rose",
-  "Emilio Estevez",
-  "Ralph Macchio",
-  "Rob Lowe",
-  "Jennifer Grey",
-  "Mickey Rourke",
-  "John Cusack",
-  "Matthew Broderick",
-  "Justine Bateman",
-  "Lisa Bonet",
+  'Lea Thompson',
+  'Cyndi Lauper',
+  'Tom Cruise',
+  'Madonna',
+  'Jerry Hall',
+  'Joan Collins',
+  'Winona Ryder',
+  'Christina Applegate',
+  'Alyssa Milano',
+  'Molly Ringwald',
+  'Ally Sheedy',
+  'Debbie Harry',
+  'Olivia Newton-John',
+  'Elton John',
+  'Michael J. Fox',
+  'Axl Rose',
+  'Emilio Estevez',
+  'Ralph Macchio',
+  'Rob Lowe',
+  'Jennifer Grey',
+  'Mickey Rourke',
+  'John Cusack',
+  'Matthew Broderick',
+  'Justine Bateman',
+  'Lisa Bonet',
 ];
+
+const CustomDocument = Document.extend({
+  content: 'vl_title block*',
+});
 
 const Editor = () => {
   const getRandomElement = (list) =>
@@ -85,8 +91,18 @@ const Editor = () => {
   const editor = useEditor({
     // editable: false,
     extensions: [
+      CustomDocument,
+      Title,
+      Placeholder.configure({
+        placeholder: ({ node }) => {
+          if (node.type.name === 'vl_title') {
+            return 'What’s the title?';
+          }
+        },
+      }),
       StarterKit.configure({
         history: false,
+        document: false,
       }),
       Collaboration.configure({
         document: ydoc,
@@ -142,14 +158,14 @@ const Editor = () => {
   return (
     <div className={containerStyles}>
       {editor && (
-        <div style={{ paddingBottom: "20px" }}>
-          Word count:{editor.getCharacterCount()}{" "}
+        <div style={{ paddingBottom: '20px' }}>
+          Word count:{editor.getCharacterCount()}{' '}
         </div>
       )}
       {editor && (
         <BubbleMenu
           className={bubbleMenuStyles(
-            editor?.isActive("excalidraw") || !editor.isEditable
+            editor?.isActive('excalidraw') || !editor.isEditable
           )}
           tippyOptions={{
             duration: 100,
@@ -158,19 +174,19 @@ const Editor = () => {
         >
           <button
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={editor.isActive("bold") ? "is-active" : ""}
+            className={editor.isActive('bold') ? 'is-active' : ''}
           >
             Bold
           </button>
           <button
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={editor.isActive("italic") ? "is-active" : ""}
+            className={editor.isActive('italic') ? 'is-active' : ''}
           >
             Italic
           </button>
           <button
             onClick={() => editor.chain().focus().toggleStrike().run()}
-            className={editor.isActive("strike") ? "is-active" : ""}
+            className={editor.isActive('strike') ? 'is-active' : ''}
           >
             Strike
           </button>
@@ -179,7 +195,7 @@ const Editor = () => {
 
       {editor && (
         <FloatingMenu
-          className={floatingMenuStyles}
+          className={floatingMenuStyles(editor)}
           tippyOptions={{ duration: 100 }}
           editor={editor}
         >
@@ -188,7 +204,7 @@ const Editor = () => {
               editor.chain().focus().toggleHeading({ level: 1 }).run()
             }
             className={
-              editor.isActive("heading", { level: 1 }) ? "is-active" : ""
+              editor.isActive('heading', { level: 1 }) ? 'is-active' : ''
             }
           >
             H1
@@ -198,26 +214,26 @@ const Editor = () => {
               editor.chain().focus().toggleHeading({ level: 2 }).run()
             }
             className={
-              editor.isActive("heading", { level: 2 }) ? "is-active" : ""
+              editor.isActive('heading', { level: 2 }) ? 'is-active' : ''
             }
           >
             H2
           </button>
           <button
             onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={editor.isActive("bulletList") ? "is-active" : ""}
+            className={editor.isActive('bulletList') ? 'is-active' : ''}
           >
             Bullet List
           </button>
           <button
             onClick={() => editor.chain().focus().toggleExecutionBlock().run()}
-            className={editor.isActive("executionBlock") ? "is-active" : ""}
+            className={editor.isActive('executionBlock') ? 'is-active' : ''}
           >
             Python
           </button>
           <button
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            className={editor.isActive("codeBlock") ? "is-active" : ""}
+            className={editor.isActive('codeBlock') ? 'is-active' : ''}
           >
             Code
           </button>
@@ -230,7 +246,7 @@ const Editor = () => {
                 .selectNodeBackward()
                 .run()
             }
-            className={editor.isActive("excalidraw") ? "is-active" : ""}
+            className={editor.isActive('excalidraw') ? 'is-active' : ''}
           >
             Draw
           </button>

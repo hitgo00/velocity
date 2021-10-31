@@ -3,6 +3,14 @@ import { css } from '@emotion/css';
 export const containerStyles = css`
   margin: 2em;
 
+  .ProseMirror .is-empty::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #ced4da;
+    pointer-events: none;
+    height: 0;
+  }
+
   .ProseMirror {
     padding: 2em;
     > * + * {
@@ -21,6 +29,10 @@ export const containerStyles = css`
 
     h2 {
       font-size: 24px;
+    }
+
+    vl_title {
+      font-size: 36px;
     }
 
     pre {
@@ -140,8 +152,16 @@ export const bubbleMenuStyles = (hidden) => css`
   }
 `;
 
-export const floatingMenuStyles = css`
-  display: flex;
+export const isHidden = (editor) => {
+  return css`
+    .tippy-content div {
+      display: ${editor?.isActive('vl_title') ? 'none !important' : 'flex'};
+    }
+  `;
+};
+
+export const floatingMenuStyles = (editor) => css`
+  display: ${editor?.isActive('vl_title') ? 'none !important' : 'flex'};
   background-color: #0d0d0d10;
   padding: 0.2rem;
   border-radius: 0.5rem;
