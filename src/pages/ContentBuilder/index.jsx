@@ -31,9 +31,10 @@ const ICE_SERVERS = [
 ];
 
 const ContentBuilder = (props) => {
-  const { courseId } = props.match.params;
+  const { courseId, lessonId } = props.match.params;
   const ROOM_ID = courseId || 'velomcity';
 
+  console.log(props.match.params);
   const socket = useRef();
   const peers = useRef({});
   const peerMedias = useRef({});
