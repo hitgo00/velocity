@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import Image from 'react-random-image'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
 
@@ -74,30 +75,26 @@ function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" component="div">
-            Courses
+            Velocity 🚀
           </Typography>
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         {/* <Box sx={{ minWidth: 35, maxWidth: 1000, maxHeight: 30 }}> */}
-        <Grid container justify="center" textAlign="center" spacing={5}>
-          {courses.map((course) => (
-            <Grid item>
+        <Grid container justify="center" textAlign="center" alignItems="stretch" spacing={5}>
+          {courses.map((course, idx) => (
+            <Grid item style={{display: 'flex'}}>
               <Card variant="outlined" sx={{ maxWidth: 200 }}>
                 <CardMedia
                   component="img"
                   height="140"
-                  image="https://picsum.photos/200/300"
+                  image={`https://picsum.photos/200/300?random=${30*idx}`}
                   alt="random pic"
                 />
                 {/* <Typography variant="h5" component="div">
                   {course}
-                </Typography>
-                <CardActions>
-                  <Button size="small" component={Link} to={`/courses/${course}/view`}>View</Button>
-                  <Button size="small" component={Link} to={`/courses/${course}/edit`}>Edit</Button>
-                </CardActions> */}
+                </Typography> */}
                 <CardActions>
                   <Button size="small" component={Link} to={`/course/${course._id}`}>{course.name}</Button>
                 </CardActions>
