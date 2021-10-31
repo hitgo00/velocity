@@ -16,6 +16,7 @@ import ExcalidrawExtension from './Extensions/Excalidraw';
 import CodeBlock from './Extensions/CodeBlock';
 import ExecutionBlock from './Extensions/ExecutionBlock';
 import Title from './Extensions/Title';
+import Embed from './Extensions/Embed';
 import Placeholder from '@tiptap/extension-placeholder';
 
 import Collaboration from '@tiptap/extension-collaboration';
@@ -117,6 +118,7 @@ const Editor = () => {
       ExcalidrawExtension,
       CodeBlock,
       ExecutionBlock,
+      Embed,
     ],
     //     content: `
     //     <p>
@@ -165,7 +167,9 @@ const Editor = () => {
       {editor && (
         <BubbleMenu
           className={bubbleMenuStyles(
-            editor?.isActive('excalidraw') || !editor.isEditable
+            editor?.isActive('excalidraw') ||
+              editor?.isActive('embed') ||
+              !editor.isEditable
           )}
           tippyOptions={{
             duration: 100,
@@ -249,6 +253,19 @@ const Editor = () => {
             className={editor.isActive('excalidraw') ? 'is-active' : ''}
           >
             Draw
+          </button>
+          <button
+            onClick={() =>
+              editor
+                .chain()
+                .focus()
+                .toggleEmbedBlock()
+                .selectNodeBackward()
+                .run()
+            }
+            className={editor.isActive('embed') ? 'is-active' : ''}
+          >
+            Embed
           </button>
         </FloatingMenu>
       )}
