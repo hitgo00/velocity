@@ -63,14 +63,14 @@ function Dashboard() {
     <>
       <AppBar position="static" sx={{mb:5}}>
         <Toolbar variant="dense">
-          <IconButton
+          {/* <IconButton
             edge="start"
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography variant="h6" color="inherit" component="div">
             Velocity 🚀
           </Typography>
