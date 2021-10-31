@@ -103,7 +103,7 @@ const Editor = (props) => {
       Placeholder.configure({
         placeholder: ({ node }) => {
           if (node.type.name === 'vl_title') {
-            return 'What’s the title?';
+            return 'Lesson Head-ing for hackout?';
           }
         },
       }),

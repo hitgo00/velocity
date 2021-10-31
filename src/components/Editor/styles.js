@@ -3,6 +3,8 @@ import { css } from '@emotion/css';
 export const containerStyles = css`
   width: 100%;
   margin: 2em;
+  margin-left: 12em;
+  margin-right: 12em;
 
   .ProseMirror .is-empty::before {
     content: attr(data-placeholder);

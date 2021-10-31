@@ -1,9 +1,12 @@
 import { noop } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
+import { useHistory } from 'react-router-dom';
 
 import Editor from '../../components/Editor';
 import SideBar from './components/Sidebar';
+import axios from 'axios';
+import { useCourseContext } from '../../components/context/CourseContext';
 
 const APP_URL = 'https://extip.herokuapp.com';
 
@@ -30,15 +33,19 @@ const ICE_SERVERS = [
   },
 ];
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
+
 const ContentBuilder = (props) => {
   const { courseId, lessonId } = props.match.params;
+  // const [lessonId, setLessonId] = useState(_lessonId);
   const ROOM_ID = courseId || 'velomcity';
+  const { course, setCourse } = useCourseContext();
+  const history = useHistory();
 
-  console.log(props.match.params);
   const socket = useRef();
   const peers = useRef({});
   const peerMedias = useRef({});
-  const audioRef = useRef(null);
+  const audioRef = useRef();
 
   const [peerStreams, setPeerStreams] = useState(0);
 
@@ -50,10 +57,10 @@ const ContentBuilder = (props) => {
   useEffect(() => {
     socket.current = io(APP_URL);
     socket.current.on('connect', function () {
-      if (audioRef.current.srcObject) joinChannel(ROOM_ID, {});
+      if (audioRef.current?.srcObject) joinChannel(ROOM_ID, {});
       else {
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-          if (audioRef) {
+          if (audioRef.current) {
             audioRef.current.srcObject = stream;
             joinChannel(ROOM_ID, {});
           }
@@ -85,14 +92,12 @@ const ContentBuilder = (props) => {
       peerConnection.onaddstream = (event) => {
         if (peer_id in peerMedias.current) return;
         peerMedias.current[peer_id] = event.stream;
-        // console.log(peerMedias.current);
         setPeerStreams((n) => n + 1);
-
-        // peerAudioRef.current.srcObject = event.stream;
       };
 
       /* Add our local stream */
-      peerConnection.addStream(audioRef.current?.srcObject);
+      if (audioRef.current?.srcObject)
+        peerConnection.addStream(audioRef.current?.srcObject);
 
       if (config.should_create_offer) {
         peerConnection.createOffer(
@@ -162,10 +167,45 @@ const ContentBuilder = (props) => {
     });
   }, [ROOM_ID, joinChannel]);
 
+  React.useEffect(() => {
+    if (!course) {
+      axios
+        .get(`${SERVER_URL}getCourse/${courseId}`)
+        .then((result) => {
+          const course = result.data;
+
+          if (course && course.lessons.length) {
+            setCourse(course);
+            console.log('hererre:', course);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [course, courseId, history, setCourse]);
+
+  const onAddLesson = useCallback(() => {
+    axios
+      .post(`${SERVER_URL}lesson`, {
+        courseId,
+      })
+      .then((result) => {
+        console.log('addL', result.data);
+        const lessonId = result.data._id;
+        history.replace(`/course/${courseId}/lesson/${lessonId}`);
+        history.go();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [courseId, history]);
+
+  console.log(lessonId);
   return (
     <div className="flex editorrr">
-      <SideBar drawerOpen />
-      <Editor name="Meet" lessonId={courseId} viewOnly={false} />
+      <SideBar drawerOpen onAddLesson={onAddLesson} />
+      <Editor name="Meet" lessonId={lessonId} viewOnly={false} />
       <audio autoPlay muted={true} ref={audioRef} />
       {peerStreams &&
         Object.entries(peerMedias.current).map((idStreamArr) => {

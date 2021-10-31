@@ -24,7 +24,6 @@ const drawerWidth = 260;
 
 const LogoSection = () => (
   <div className="flex-shrink-0 mr-4">
-    {/* Logo */}
     <Link to="/" className="block flex space-x-2 " aria-label="Cruip">
       <svg
         className="w-8 h-8"
@@ -59,9 +58,7 @@ const LogoSection = () => (
   </div>
 );
 
-// ==============================|| SIDEBAR DRAWER ||============================== //
-
-const Sidebar = ({ drawerOpen }) => {
+const Sidebar = ({ onAddLesson }) => {
   const theme = useTheme();
   const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -95,8 +92,7 @@ const Sidebar = ({ drawerOpen }) => {
                 pl: `24px`,
               }}
               selected={false}
-              // onClick={() => itemHandler(item.id)
-              // }
+              onClick={onAddLesson}
             >
               <ListItemIcon sx={{ my: 'auto', minWidth: 36 }}>
                 <IconPlus />

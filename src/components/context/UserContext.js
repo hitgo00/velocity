@@ -75,7 +75,7 @@ function loginUser(dispatch, history, response, routerState) {
       console.log(result.data);
       localStorage.setItem('courses_created', result.data.coursesCreated);
       dispatch({ type: 'LOGIN_SUCCESS' });
-      const link = (routerState && routerState.from) || '/editor'; // Redirect to /editor or the history-url user came from
+      const link = (routerState && routerState.from) || '/dashboard'; // Redirect to /editor or the history-url user came from
       history.replace(link);
     })
     .catch((err) => {

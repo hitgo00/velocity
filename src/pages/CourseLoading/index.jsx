@@ -6,6 +6,8 @@ import { useHistory } from 'react-router-dom';
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
 
+
+
 const CourseLodaingPage = (props) => {
   const { courseId } = props.match.params;
 
@@ -19,7 +21,7 @@ const CourseLodaingPage = (props) => {
       .get(`${SERVER_URL}getCourse/${courseId}`)
       .then((result) => {
         const course = result.data;
-        console.log(course);
+        // console.log(course);
         if (course && course.lessons.length) {
           setCourse(course);
           const lessonId = course.lessons[0]._id;
