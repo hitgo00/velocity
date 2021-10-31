@@ -4,26 +4,38 @@ import { ReactNodeViewRenderer } from '@tiptap/react';
 
 import Nodeview from './NodeView';
 
-const EmbedExtension = Node.create({
-  name: 'embed',
+let a = {
+  questionId: {
+    questionText: 'what . .. . ? ',
+    options: {
+      optionId: {
+        text: 'Taj',
+        isCorrect: true,
+      },
+    },
+  },
+};
+
+const QuizExtension = Node.create({
+  name: 'quiz',
   group: 'block',
   atom: true,
 
   parseHTML() {
     return [
       {
-        tag: 'Embed',
+        tag: 'Quiz',
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['Embed', mergeAttributes(HTMLAttributes)];
+    return ['Quiz', mergeAttributes(HTMLAttributes)];
   },
 
   addAttributes() {
     return {
-      url: {
+      questionsMap: {
         default: null,
       },
     };
@@ -35,13 +47,13 @@ const EmbedExtension = Node.create({
 
   addCommands() {
     return {
-      toggleEmbedBlock:
+      toggleQuizBlock:
         (_attributes) =>
         ({ commands }) => {
-          return commands.insertContent('<Embed></Embed>');
+          return commands.insertContent('<Quiz></Quiz>');
         },
     };
   },
 });
 
-export default EmbedExtension;
+export default QuizExtension;

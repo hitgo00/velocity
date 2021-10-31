@@ -17,6 +17,7 @@ import CodeBlock from './Extensions/CodeBlock';
 import ExecutionBlock from './Extensions/ExecutionBlock';
 import Title from './Extensions/Title';
 import Embed from './Extensions/Embed';
+import Quiz from './Extensions/Quiz';
 import Placeholder from '@tiptap/extension-placeholder';
 
 import Collaboration from '@tiptap/extension-collaboration';
@@ -69,7 +70,8 @@ const CustomDocument = Document.extend({
   content: 'vl_title block*',
 });
 
-const Editor = () => {
+const Editor = (props) => {
+  const { name, lessonId, viewOnly } = props;
   const getRandomElement = (list) =>
     list[Math.floor(Math.random() * list.length)];
 
@@ -78,10 +80,14 @@ const Editor = () => {
 
   const { ydoc, provider } = useMemo(() => {
     const ydoc = new Y.Doc();
-    const provider = new WebsocketProvider(socketUrl, ROOM_ID, ydoc);
+    const provider = new WebsocketProvider(
+      socketUrl,
+      lessonId || ROOM_ID,
+      ydoc
+    );
 
     return { ydoc, provider };
-  }, []);
+  }, [lessonId]);
 
   useEffect(() => {
     return () => {
@@ -90,7 +96,7 @@ const Editor = () => {
   }, [provider]);
 
   const editor = useEditor({
-    // editable: false,
+    editable: !viewOnly,
     extensions: [
       CustomDocument,
       Title,
@@ -111,7 +117,7 @@ const Editor = () => {
       CollaborationCursor.configure({
         provider: provider,
         user: {
-          name: getRandomName(),
+          name: name || getRandomName(),
           color: getRandomColor(),
         },
       }),
@@ -119,6 +125,7 @@ const Editor = () => {
       CodeBlock,
       ExecutionBlock,
       Embed,
+      Quiz,
     ],
     //     content: `
     //     <p>
@@ -169,6 +176,7 @@ const Editor = () => {
           className={bubbleMenuStyles(
             editor?.isActive('excalidraw') ||
               editor?.isActive('embed') ||
+              editor?.isActive('quiz') ||
               !editor.isEditable
           )}
           tippyOptions={{
