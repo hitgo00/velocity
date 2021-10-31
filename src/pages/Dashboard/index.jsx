@@ -13,7 +13,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import CardMedia from '@mui/material/CardMedia';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || '';
 
 const card = (
   <React.Fragment>
@@ -38,20 +42,24 @@ const card = (
 
 function Dashboard() {
   // const courses = localStorage.getItem('courses_created') || []
-  const courses = [
-    {name: 'Course 1', _id: 'abcdcadkjfbsjv', coursesCreated: []},
-    {name: 'Course 2', _id: 'dlvjaljndfiovb', coursesCreated: []},
-    {name: 'Course 3', _id: 'sfkbhjvsafvoin', coursesCreated: []},
-    {name: 'Course 4', _id: 'sdiouwbvhfvnui', coursesCreated: []},
-    {name: 'Course 5', _id: 'sijbvsiovbdkjc', coursesCreated: []},
-    {name: 'Course 6', _id: 'skdvljnsaijnff', coursesCreated: []},
-  ];
+  // const courses = [
+  //   {name: 'Course 1', _id: 'abcdcadkjfbsjv', coursesCreated: []},
+  //   {name: 'Course 2', _id: 'dlvjaljndfiovb', coursesCreated: []},
+  //   {name: 'Course 3', _id: 'sfkbhjvsafvoin', coursesCreated: []},
+  //   {name: 'Course 4', _id: 'sdiouwbvhfvnui', coursesCreated: []},
+  //   {name: 'Course 5', _id: 'sijbvsiovbdkjc', coursesCreated: []},
+  //   {name: 'Course 6', _id: 'skdvljnsaijnff', coursesCreated: []},
+  // ];
+  const history = useHistory();
 
-  // const courses, setCourses = useState([])
+  const [courses, setCourses] = useState([])
 
-  // useEffect(() => {
-  //   axios.get(`${SERVER_URL}/listcourses/${localStorage.getItem('email')}`)
-  // }, [])
+  useEffect(() => {
+    axios.get(`${SERVER_URL}listallcourses/`).then(result => {
+      console.log(result.data);
+      setCourses(result.data)
+    })
+  }, [])
 
   return (
     <>
@@ -91,11 +99,38 @@ function Dashboard() {
                   <Button size="small" component={Link} to={`/courses/${course}/edit`}>Edit</Button>
                 </CardActions> */}
                 <CardActions>
-                  <Button size="small" component={Link} to={`/courses/${course._id}`}>{course.name}</Button>
+                  <Button size="small" component={Link} to={`/course/${course._id}`}>{course.name}</Button>
                 </CardActions>
               </Card>
             </Grid> 
           ))} 
+
+            <Grid item>
+              <Card variant="outlined" sx={{ maxWidth: 200 }}>
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image="https://cdn.icon-icons.com/icons2/902/PNG/512/plus_icon-icons.com_69322.png"
+                  alt="random pic"
+                />
+                {/* <Typography variant="h5" component="div">
+                  {course}
+                </Typography>
+                <CardActions>
+                  <Button size="small" component={Link} to={`/courses/${course}/view`}>View</Button>
+                  <Button size="small" component={Link} to={`/courses/${course}/edit`}>Edit</Button>
+                </CardActions> */}
+                <CardActions>
+                  <Button size="small" onClick={() => {
+                      axios.post(`${SERVER_URL}course`, { name: 'Untitled Course' }).then(response => {
+                        console.log(response);
+                        history.push(`/course/${response.data._id}`)
+                      })
+                  }} >Create New Course</Button>
+                </CardActions>
+              </Card>
+            </Grid> 
+
         </Grid>
       </Container>
       {/* </Box> */}
